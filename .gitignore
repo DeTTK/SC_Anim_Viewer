@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+
+# Build/runtime artifacts
+build/
+active_bundle.json
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

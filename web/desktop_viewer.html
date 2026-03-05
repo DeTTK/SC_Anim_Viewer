@@ -1,0 +1,23 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STALCRAFT Desktop Preview</title>
+  <link rel="stylesheet" href="./desktop_viewer.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three/build/three.module.js",
+        "three/addons/": "./vendor/three/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="viewport"></canvas>
+  <div id="status">Loading...</div>
+  <script src="./manifest.js"></script>
+  <script type="module" src="./desktop_viewer.js"></script>
+</body>
+</html>

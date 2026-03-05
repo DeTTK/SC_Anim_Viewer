@@ -1,0 +1,58 @@
+[project]
+name = "sc-file"
+description = "Utility & Library for decoding stalcraft assets"
+
+dynamic = ["version"]
+
+requires-python = ">=3.11"
+
+authors = [{ name = "onejeuu", email = "mail@66rk.ru" }]
+
+readme = "README.md"
+license = "MIT"
+
+dependencies = [
+    "click>=8.2.0,<9.0.0",
+    "lz4>=4.4.0,<5.0.0",
+    "numpy>=2.3.0,<3.0.0",
+    "rich>=14.1.0,<15.0.0",
+    "zstandard>=0.25.0",
+]
+
+[dependency-groups]
+dev = ["pyinstaller>=6.15.0,<7.0.0", "pytest>=8.4.0,<9.0.0"]
+
+docs = [
+    "sphinx>=8.2.3,<9.0.0",
+    "sphinx-autobuild>=2025.8.25",
+    "sphinx-autodoc-typehints>=3.5.2",
+    "sphinx-book-theme>=1.1.4",
+    "sphinx-intl>=2.3.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/onejeuu/sc-file"
+Repository = "https://github.com/onejeuu/sc-file"
+Documentation = "https://sc-file.readthedocs.io"
+
+[project.scripts]
+scfile = "scfile.__main__:main"
+mcal-inspect = "scfile.tools.mcal_inspect:main"
+mcal-inspect-gui = "scfile.tools.mcal_inspect_gui:main"
+
+[tool.setuptools]
+packages = { find = { include = ["scfile", "scfile.*"] } }
+
+[tool.setuptools.dynamic]
+version = { attr = "scfile.__version__" }
+
+[tool.ruff.lint]
+ignore = ["E701"]
+
+[tool.isort]
+lines_after_imports = 2
+skip = ["__init__.py"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
