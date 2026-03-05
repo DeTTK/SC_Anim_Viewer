@@ -83,9 +83,41 @@ def clip_display_name(name: str) -> str:
 
 
 def run_cmd(args: list[str], cwd: Path | None = None) -> None:
-    proc = subprocess.run(args, cwd=str(cwd) if cwd else None, capture_output=True, text=True)
-    if proc.returncode != 0:
-        raise RuntimeError(f"Command failed: {' '.join(args)}\n{proc.stdout}\n{proc.stderr}")
+    def _run() -> subprocess.CompletedProcess[str]:
+        return subprocess.run(args, cwd=str(cwd) if cwd else None, capture_output=True, text=True)
+
+    def _install_pkg(spec: str) -> None:
+        install_cmd = ["py", "-m", "pip", "install", spec]
+        install_proc = subprocess.run(install_cmd, capture_output=True, text=True)
+        if install_proc.returncode != 0:
+            raise RuntimeError(
+                "Failed to install missing Python dependency automatically.\n"
+                f"Command: {' '.join(install_cmd)}\n"
+                f"{install_proc.stdout}\n{install_proc.stderr}"
+            )
+
+    proc = _run()
+    if proc.returncode == 0:
+        return
+
+    output = f"{proc.stdout}\n{proc.stderr}"
+    is_scfile_cli = len(args) >= 3 and args[0] == "py" and args[1] == "-m" and args[2] == "scfile"
+    missing = re.search(r"No module named '([^']+)'", output)
+    if is_scfile_cli and missing:
+        pkg_map = {
+            "click": "click>=8.2,<9",
+            "rich": "rich>=14.1,<15",
+            "lz4": "lz4>=4.4,<5",
+            "zstandard": "zstandard>=0.25,<1",
+            "numpy": "numpy>=2.3,<3",
+        }
+        missing_mod = missing.group(1).split(".", 1)[0]
+        _install_pkg(pkg_map.get(missing_mod, missing_mod))
+        proc = _run()
+        if proc.returncode == 0:
+            return
+
+    raise RuntimeError(f"Command failed: {' '.join(args)}\n{proc.stdout}\n{proc.stderr}")
 
 
 def choose_blender_exe() -> Path:
